@@ -3,15 +3,16 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <string>
 #include "TimedDoor.h"
 using std::this_thread::sleep_for;
 using namespace std::chrono_literals;
 
 void TimedDoor::throwState() {
     if (open) {
-        throw std::string{"the door is opened!"};
+        throw std::string("the door is opened!");
     } else {
-        throw std::string{"the door is closed!"};
+        throw std::string("the door is closed!");
     }
 }
 
@@ -25,27 +26,29 @@ void DoorTimeAdapter::Timeout() {
 
 Timer::Timer(DoorTimeAdapter * doorAdapter) {
     this->doorAdapter = doorAdapter;
-    this->calcTime();
 }
 
 void Timer::calcTime() {
-    sleep_for(std::chrono::seconds(timeOpen));
+    sleep_for(std::chrono::seconds(this->doorAdapter->door->time));
     if (this->doorAdapter->door->open)
         this->doorAdapter->Timeout();
 }
 
-TimedDoor::TimedDoor() {
-    
+TimedDoor::TimedDoor(int time) {
+    this->time = time;
+    this->Adapter = new DoorTimeAdapter(this);
 }
 
 void TimedDoor::DoorTimeOut() {
-    throw std::string("close the door!");
+    if (open)
+        throw std::string("close the door!");
 }
 
-void TimedDoor::OpentheDoor(DoorTimeAdapter * dr) {
-    this->open = true;
-    Timer tm(dr);
-}
-void TimedDoor::ClosetheDoor() {
+void TimedDoor::lock() {
     this->open = false;
+}
+void TimedDoor::unlock() {
+    this->open = true;
+    Timer tm(Adapter);
+    tm.calcTime();
 }

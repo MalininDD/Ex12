@@ -15,21 +15,21 @@ public:
 class Timer {
  public:
     explicit Timer(DoorTimeAdapter * doorAdapter);
-    DoorTimeAdapter * doorAdapter = nullptr;
+    DoorTimeAdapter * doorAdapter;
     void calcTime();
 };
 
 class TimedDoor {
  public:
+    int time = 0;
+    DoorTimeAdapter * Adapter;
     bool open = false;
     void DoorTimeOut();
-    explicit TimedDoor();
-    void OpentheDoor(DoorTimeAdapter * dr);
-    void ClosetheDoor();
+    explicit TimedDoor(int time);
+    void lock();
+    void unlock();
     void throwState();
 };
 
-
-const size_t timeOpen = 5;
 
 #endif  // INCLUDE_TIMEDOOR_H_

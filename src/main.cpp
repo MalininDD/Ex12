@@ -4,10 +4,9 @@
 #include "TimedDoor.h"
 
 int main() {
-    TimedDoor door;
-    DoorTimeAdapter doorAdapter(&door);
+    TimedDoor door(1);
     try {
-        door.OpentheDoor(&doorAdapter);
+        door.unlock();
         door.throwState();
     } catch(std::string message) {
         std::cout << message << std::endl;
