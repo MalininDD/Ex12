@@ -1,11 +1,16 @@
-// Copyright 2021 GHA Test Team
-#include "TimedDoor.h"
+// Copyright 2021 MalininDmitry
+
 #include <iostream>
+#include "TimedDoor.h"
 
 int main() {
-  TimedDoor tDoor(5);
-  tDoor.lock();
-  tDoor.unlock();
-
-  return 0;
+    TimedDoor door;
+    DoorTimeAdapter doorAdapter(&door);
+    try {
+        door.OpentheDoor(&doorAdapter);
+        door.throwState();
+    } catch(std::string message) {
+        std::cout << message << std::endl;
+    }
+    return 0;
 }

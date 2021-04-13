@@ -1,52 +1,35 @@
-// Copyright 2021 GHA Test Team
+// Copyright 2021 MalininDmitry
 
-#ifndef INCLUDE_TIMEDDOOR_H_
-#define INCLUDE_TIMEDDOOR_H_
+#ifndef INCLUDE_TIMEDOOR_H_
+#define INCLUDE_TIMEDOOR_H_
 
-class DoorTimerAdapter;
-class Timer;
-class Door;
 class TimedDoor;
 
-class TimerClient {
- public:
-  virtual void Timeout() = 0;
-};
-
-class Door {
- public:
-  virtual void lock() = 0;
-  virtual void unlock() = 0;
-  virtual bool isDoorOpened() = 0;
-};
-
-class DoorTimerAdapter : public TimerClient {
- private:
-  TimedDoor& door;
- public:
-  explicit DoorTimerAdapter(TimedDoor&);
-  void Timeout();
-};
-
-class TimedDoor : public Door {
- private:
-  DoorTimerAdapter * adapter;
-  int iTimeout;
-  bool opened;
- public:
-  explicit TimedDoor(int);
-  bool isDoorOpened();
-  void unlock();
-  void lock();
-  void DoorTimeOut();
-  void throwState();
+class DoorTimeAdapter {
+public:
+    TimedDoor * door = nullptr;
+    explicit DoorTimeAdapter(TimedDoor * door);
+    void Timeout();
 };
 
 class Timer {
-  TimerClient *client;
-  void sleep(int);
  public:
-  void tregister(int, TimerClient*);
+    explicit Timer(DoorTimeAdapter * doorAdapter);
+    DoorTimeAdapter * doorAdapter = nullptr;
+    void calcTime();
 };
 
-#endif  // INCLUDE_TIMEDDOOR_H_
+class TimedDoor {
+ public:
+    bool open = false;
+    void DoorTimeOut();
+    explicit TimedDoor();
+    void OpentheDoor(DoorTimeAdapter * dr);
+    void ClosetheDoor();
+    void throwState();
+};
+
+
+const size_t timeOpen = 5;
+
+#endif  // INCLUDE_TIMEDOOR_H_
